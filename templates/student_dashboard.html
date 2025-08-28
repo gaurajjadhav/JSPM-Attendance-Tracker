@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}My Attendance{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>My Attendance</h2>
+	<form method="get" class="filters">
+		<label>
+			Period
+			<select name="period">
+				<option value="daily" {% if period=='daily' %}selected{% endif %}>Daily</option>
+				<option value="weekly" {% if period=='weekly' %}selected{% endif %}>Weekly</option>
+				<option value="monthly" {% if period=='monthly' %}selected{% endif %}>Monthly</option>
+			</select>
+		</label>
+		<label>Start <input type="date" name="start" value="{{ start }}" /></label>
+		<label>End <input type="date" name="end" value="{{ end }}" /></label>
+		<button type="submit" class="btn-apply">Apply</button>
+		<a class="btn btn-jspm btn-sm" href="{{ url_for('student_dashboard', today=1) }}">Today</a>
+		<span>From {{ start }} to {{ end }}</span>
+	</form>
+	<h3>Subject-wise Summary</h3>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Sr. No.</th>
+					<th>Course Code</th>
+					<th>Subject</th>
+					<th>Total Lectures</th>
+					<th>Attended</th>
+					<th>% Attendance</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for p in percents %}
+				<tr class="{% if p.percent < 75 %}warn{% endif %}">
+					<td>{{ loop.index }}</td>
+					<td>{{ p.code }}</td>
+					<td>{{ p.subject }}</td>
+					<td>{{ p.total }}</td>
+					<td>{{ p.attended }}</td>
+					<td>{{ '%.2f'|format(p.percent) }}%</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% if below and below|length > 0 %}
+		<p class="warn-text">Alert: Your attendance in some subjects is below 75%.</p>
+	{% endif %}
+	<!-- Recent attendance table hidden for modal use -->
+	<div class="d-none">
+		<table id="recentTable" class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Subject</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for r in rows %}
+				<tr>
+					<td>{{ r.date }}</td>
+					<td>{{ r.subject }}</td>
+					<td>{{ r.status }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</section>
+{% endblock %}
+
+
