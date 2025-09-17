@@ -16,10 +16,10 @@ Simple Flask app to mark class attendance, auto-calc percentages, and generate r
   - Personal dashboard (daily/weekly/monthly), subject-wise percentages, alerts for < 75%.
 - Teacher
   - Select class/subject from assignments, mark attendance (with “Mark All Present”), class report with date range, CSV/PDF export.
-- Admin
-  - Attendance sheet with filters (class/subject/search), defaulters, CSV/PDF export, bulk import Students and Teachers.
+- Any User
+  - Attendance sheet with filters (class/subject/search), defaulters, CSV/PDF export.
 - HOD
-  - Dashboard shortcuts, remove student/teacher, Import Class (create class and add students via Paste or CSV), optional subject–teacher assignments with validation.
+  - Dashboard shortcuts, remove student/teacher, bulk import Students and Teachers, Import Class (create class and add students via Paste or CSV), optional subject–teacher assignments with validation.
 
 ## Quick Start (Local)
 1) Prerequisites: Python 3.10+
