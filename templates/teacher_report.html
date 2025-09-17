@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Class Report{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Class Report - {{ subject }} ({{ class_name }})</h2>
+	<form method="get" class="filters">
+		<label>Start <input type="date" name="start" value="{{ start }}" /></label>
+		<label>End <input type="date" name="end" value="{{ end }}" /></label>
+		<input type="hidden" name="cls" value="{{ class_name }}" />
+		<input type="hidden" name="subject" value="{{ subject }}" />
+		<button type="submit" class="btn-apply">Apply</button>
+		<a class="btn" href="{{ url_for('teacher_report', cls=class_name, subject=subject, today=1) }}">Today</a>
+		<a class="btn" href="{{ url_for('teacher_export_csv', cls=class_name, subject=subject, start=start, end=end) }}">CSV</a>
+		<a class="btn" href="{{ url_for('teacher_export_pdf', cls=class_name, subject=subject, start=start, end=end) }}">PDF</a>
+	</form>
+	<div class="table-responsive">
+	<table class="table table-striped table-hover table-sticky-first">
+		<thead>
+			<tr>
+				<th class="col-roll">Roll No</th>
+				<th class="col-name">Name</th>
+				<th>Total Lectures</th>
+				<th>Attended</th>
+				<th>% Attendance</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for r in report %}
+			<tr class="{% if r.percent < 50 %}danger-strong{% elif r.percent < 75 %}warn{% endif %}">
+				<td class="col-roll">{{ r.roll_no|short_roll }}</td>
+				<td class="col-name">{{ r.name }}</td>
+				<td>{{ r.total }}</td>
+				<td>{{ r.attended }}</td>
+				<td>{{ '%.2f'|format(r.percent) }}%</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+</section>
+{% endblock %}
+
+
