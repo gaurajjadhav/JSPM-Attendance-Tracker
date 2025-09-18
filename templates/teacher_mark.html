@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Class Attendance{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Class Attendance</h2>
+	<div class="table-actions mb-2">
+		<a class="btn btn-jspm btn-sm" href="{{ url_for('teacher_select') }}">Change Class/Sub</a>
+		<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('teacher_report', cls=class_name, subject=subject) }}">View Report</a>
+	</div>
+	<form method="get" class="filters">
+		<input type="hidden" name="cls" value="{{ class_name }}" />
+		<input type="hidden" name="subject" value="{{ subject }}" />
+		<label>
+			Date
+			<input type="date" name="date" value="{{ date }}" />
+		</label>
+		<button type="submit" class="btn btn-sm btn-outline-primary">Load</button>
+	</form>
+	<form method="post" class="section">
+		<input type="hidden" name="date" value="{{ date }}" />
+		<label class="inline">
+			<input type="checkbox" name="mark_all" /> Mark All Present
+		</label>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover align-middle mt-2 table-sticky-first">
+				<thead>
+					<tr>
+						<th class="col-roll">Roll No</th>
+						<th class="col-prn">PRN</th>
+						<th class="col-name">Name</th>
+						<th class="col-status">Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for s in students %}
+					<tr>
+						<td class="col-roll">{{ s.roll_no|short_roll }}</td>
+						<td class="col-prn">{{ s.prn or '' }}</td>
+						<td class="col-name">{{ s.name }}</td>
+						<td class="col-status">
+							<div class="toggle-group" role="group" aria-label="Attendance status">
+								<label class="toggle">
+									<input type="radio" name="status_{{ s.student_id }}" value="Present" {% if status_map.get(s.student_id) == 'Present' %}checked{% endif %} />
+									<span>Present</span>
+								</label>
+								<label class="toggle">
+									<input type="radio" name="status_{{ s.student_id }}" value="Absent" {% if status_map.get(s.student_id) != 'Present' %}checked{% endif %} />
+									<span>Absent</span>
+								</label>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<button type="submit" class="btn btn-gradient text-white">Save Attendance</button>
+	</form>
+</section>
+{% endblock %}
+
+

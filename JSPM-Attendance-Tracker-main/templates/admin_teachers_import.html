@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Import Teachers{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Import Teachers</h2>
+	<form method="post">
+		<label style="display:block">Data (one teacher per line)
+			<textarea name="data" rows="10" style="width:100%" placeholder="Name,Phone,Password,Subject,Class"></textarea>
+		</label>
+		<p class="hint">Example: Dr. New Teacher,9000000000,Pass@123,AI,SYMCA Div A</p>
+		<button type="submit">Import</button>
+	</form>
+</section>
+{% endblock %}

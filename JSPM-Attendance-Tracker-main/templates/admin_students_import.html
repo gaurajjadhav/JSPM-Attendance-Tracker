@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Import Students{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Import Students</h2>
+	<form method="post">
+		<label>Class
+			<select name="class" required>
+				<option value="">-- Select --</option>
+				{% for c in classes %}
+				<option value="{{ c }}">{{ c }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label style="display:block">Data (one student per line)
+			<textarea name="data" rows="12" style="width:100%" placeholder="24MCA1B01,42456530086,LANGHE PRASAD SHIVAJI"></textarea>
+		</label>
+		<p class="hint">Accepted formats: CSV "roll,prn,name" or whitespace separated "roll prn name..."</p>
+		<button type="submit">Import</button>
+	</form>
+</section>
+{% endblock %}

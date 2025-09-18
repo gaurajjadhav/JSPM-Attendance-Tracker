@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title or 'Admin Reports' }}{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>{{ page_title or 'Admin Reports' }}</h2>
+	<form method="get" class="filters" action="{{ url_for('sheet_reports') if is_sheet else url_for('admin_reports') }}">
+		<label>Class
+			<select name="class">
+				<option value="">All</option>
+				{% for c in classes %}
+				<option value="{{ c }}" {% if class_name==c %}selected{% endif %}>{{ c }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label>Subject
+			<select name="subject">
+				<option value="">All</option>
+				{% for s in subjects %}
+				<option value="{{ s }}" {% if subject==s %}selected{% endif %}>{{ s }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label>Start <input type="date" name="start" value="{{ start }}" /></label>
+		<label>End <input type="date" name="end" value="{{ end }}" /></label>
+		<label>Search <input type="text" name="search" value="{{ search }}" placeholder="Roll/Name" /></label>
+		<div class="btn-group">
+			<button type="submit" class="btn btn-sm">Apply</button>
+			{% if is_sheet %}
+				<a class="btn btn-export-csv" href="{{ url_for('sheet_export_csv', class=class_name, subject=subject, start=start, end=end) }}">Export CSV</a>
+				<a class="btn btn-export-pdf" href="{{ url_for('sheet_export_pdf', start=start, end=end) }}">Export Defaulters PDF</a>
+			{% else %}
+				<a class="btn btn-export-csv" href="{{ url_for('admin_export_csv', class=class_name, subject=subject, start=start, end=end) }}">Export CSV</a>
+				<a class="btn btn-export-pdf" href="{{ url_for('admin_export_pdf', start=start, end=end) }}">Export Defaulters PDF</a>
+				<a class="btn btn-import" href="{{ url_for('admin_students_import') }}">Import Students</a>
+				<a class="btn btn-import" href="{{ url_for('admin_teachers_import') }}">Import Teachers</a>
+			{% endif %}
+		</div>
+	</form>
+	<h3>Class Report</h3>
+	<div class="table-responsive">
+	<table class="table table-striped table-hover table-sticky-first">
+		<thead>
+			<tr>
+				<th class="col-roll">Roll No</th>
+				<th class="col-name">Name</th>
+				<th class="col-class">Class</th>
+				<th>Total Lectures</th>
+				<th>Attended</th>
+				<th>% Attendance</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for r in report %}
+			<tr class="{% if r.percent < 50 %}danger-strong{% elif r.percent < 75 %}warn{% endif %}">
+				<td class="col-roll">{{ r.roll_no|short_roll }}</td>
+				<td class="col-name">{{ r.name }}</td>
+				<td class="col-class">{{ r.class }}</td>
+				<td>{{ r.total }}</td>
+				<td>{{ r.attended }}</td>
+				<td>{{ '%.2f'|format(r.percent) }}%</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+	<h3>Defaulters (&lt;75%)</h3>
+	<div class="table-responsive">
+	<table class="table table-striped table-hover table-sticky-first">
+		<thead>
+			<tr>
+				<th class="col-roll">Roll No</th>
+				<th class="col-name">Name</th>
+				<th>% Attendance</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for r in defaulters %}
+			<tr class="{% if r.percent < 50 %}danger-strong{% else %}warn{% endif %}">
+				<td class="col-roll">{{ r.roll_no|short_roll }}</td>
+				<td class="col-name">{{ r.name }}</td>
+				<td>{{ '%.2f'|format(r.percent) }}%</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</div>
+</section>
+{% endblock %}
+
+

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Import Class{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Import Class</h2>
+	{% if errors %}
+		<div class="alert alert-warning">
+			<strong>Some issues were found:</strong>
+			<ul class="mb-0">
+				{% for e in errors %}
+				<li>{{ e }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+	<form method="post" enctype="multipart/form-data">
+		<div class="row g-3">
+			<div class="col-md-6">
+				<label class="form-label">Class Name
+					<input class="form-control" name="class" list="classSuggestions" value="{{ class_name or '' }}" placeholder="e.g., SYMCA Div A" required />
+				</label>
+				<datalist id="classSuggestions">
+					{% for c in suggestions %}
+					<option value="{{ c }}"></option>
+					{% endfor %}
+				</datalist>
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Semester
+					<input class="form-control" type="number" min="1" max="10" name="semester" value="{{ semester or 2 }}" required />
+				</label>
+			</div>
+		</div>
+		<div class="mt-3">
+			<label class="form-label">Students (one per line)
+				<textarea class="form-control" name="data" rows="12" placeholder="24MCA1B01,42456530086,LANGHE PRASAD SHIVAJI&#10;24MCA1B02,42456530087,DOE JANE" required>{{ request.form.get('data','') }}</textarea>
+			</label>
+			<p class="text-muted small">Accepted: CSV "roll,prn,name" or whitespace "roll prn name..."</p>
+		</div>
+		<div class="mt-2">
+			<label class="form-label">Or upload CSV file
+				<input class="form-control" type="file" name="file" accept=".csv,text/csv" />
+			</label>
+			<p class="text-muted small">CSV columns: roll, prn, name</p>
+		</div>
+		<div class="mt-3">
+			<label class="form-label">Subject-Teacher Assignments (optional)
+				<textarea class="form-control" name="assignments" rows="5" placeholder="FBDA, 9637717113&#10;BSE, Dr. Amit Kumar Sir">{{ request.form.get('assignments','') }}</textarea>
+			</label>
+			<p class="text-muted small">Format per line: subject, teacher phone or exact name</p>
+		</div>
+		<button class="btn btn-jspm mt-2" type="submit">Import Class</button>
+	</form>
+</section>
+{% endblock %}
+
+

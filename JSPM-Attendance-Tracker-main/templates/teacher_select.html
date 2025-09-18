@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Select Class & Subject{% endblock %}
+{% block content %}
+<section class="card">
+	<h2>Select Class & Subject</h2>
+	<form method="post" class="filters" id="selectForm">
+		<label>
+			Class
+			<select name="class" id="classSelect" required>
+				<option value="">-- Select --</option>
+				{% for c in classes %}
+				<option value="{{ c }}" {% if selected_class==c %}selected{% endif %}>{{ c }}</option>
+				{% endfor %}
+			</select>
+		</label>
+		<label>
+			Subject
+			<select name="subject" id="subjectSelect">
+				<option value="">-- Select --</option>
+			</select>
+		</label>
+		<button type="submit" class="btn-continue">Continue</button>
+	</form>
+	<script>
+		const mapData = {{ class_to_subjects | tojson }};
+		const classSel = document.getElementById('classSelect');
+		const subjSel = document.getElementById('subjectSelect');
+		function refreshSubjects(){
+			const cls = classSel.value;
+			const subs = (mapData[cls] ? Array.from(mapData[cls]) : []);
+			subjSel.innerHTML = '<option value="">-- Select --</option>';
+			subs.sort().forEach(s => {
+				const opt = document.createElement('option');
+				opt.value = s; opt.textContent = s; subjSel.appendChild(opt);
+			});
+			if (subs.length === 1){ subjSel.value = subs[0]; }
+		}
+		classSel.addEventListener('change', refreshSubjects);
+		// initialize on load if class preselected
+		refreshSubjects();
+	</script>
+	<p class="hint">Subjects list is restricted to your assignment for the selected class.</p>
+</section>
+{% endblock %}

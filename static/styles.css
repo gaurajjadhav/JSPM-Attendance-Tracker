@@ -1,0 +1,243 @@
+/* JSPM Theme - works with Bootstrap 5 */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+:root{
+	--jspm-blue:#e25162; /* deeper primary for contrast */
+	--jspm-red:#d62828;  /* secondary */
+	--jspm-gold:#f1c40f; /* accent */
+	--jspm-light:#000000;
+	--jspm-muted:#000000;
+}
+body{font-family:'Poppins',Arial,Helvetica,sans-serif;color:#ffffff;background:#f6f7fb}
+.bg-gradient-jspm{background:linear-gradient(135deg,#f6f7fb 0%,#eef2f9 35%,#ffffff 100%)}
+.navbar{box-shadow:0 4px 12px rgb(236, 225, 225)}
+.jspm-title{letter-spacing:.2px}
+
+/* Clean horizontal navbar layout */
+header{position:sticky;top:0;z-index:1030}
+.navbar .container{display:flex;align-items:center;justify-content:space-between}
+.navbar-brand{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.navbar-toggler{flex:0 0 auto;margin:0;padding:4px 8px;border:1px solid #dee2e6;border-radius:6px}
+.navbar-toggler:focus{box-shadow:0 0 0 0.2rem rgba(226,81,98,.25)}
+
+@media (max-width: 767.98px){
+	.navbar{padding:.5rem 0}
+	.navbar-brand img{height:40px}
+	.jspm-title{font-size:16px;font-weight:600}
+}
+@media (max-width: 575.98px){
+	.navbar-brand img{height:36px}
+	.jspm-title{font-size:14px}
+}
+
+/* Cards - stronger shiny look */
+.card{position:relative;border:1px solid #e6e9f0;border-radius:18px;background:linear-gradient(180deg,#ffffff 0%, #fbfbff 55%, #f2f6ff 100%);box-shadow:0 14px 30px rgba(0,0,0,.10);animation:fadeIn .25s ease-out;padding:26px;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;border-radius:18px;padding:1.2px;background:linear-gradient(120deg,rgba(31,66,135,.35),rgba(227,140,140,.35));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.card::after{content:"";position:absolute;top:-50px;left:-50px;width:140px;height:140px;background:radial-gradient(closest-side,rgba(31,66,135,.16),transparent);filter:blur(10px);z-index:0}
+.card h2,.card h3{position:relative;z-index:1;font-weight:700;margin-bottom:1rem;color:#5d58c7}
+.card h2::after{content:"";display:block;width:72px;height:3px;border-radius:2px;margin-top:6px;background:linear-gradient(90deg,var(--jspm-blue),#e38c8c)}
+.card:hover{box-shadow:0 18px 40px rgba(33, 19, 229, 0.14)}
+.card .filters{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;align-items:center;margin-bottom:1rem}
+.card .filters label{margin:0}
+.card .section{margin-top:1rem}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Tables */
+.table{margin-top:.5rem;background:#fff;border-radius:12px;overflow:visible}
+.table thead th{background:#f3f4f6;border-bottom:2px solid #e5e7eb}
+.table th,.table td{padding:.8rem 1rem;vertical-align:middle;color:#111}
+.table-hover tbody tr:hover{background:#fafafa}
+.badge-good{background:#16a34a}.badge-avg{background:#f59e0b}.badge-low{background:#ef4444}
+
+/* Column spacing in teacher mark */
+.col-roll{width:110px}
+.col-prn{width:160px}
+.col-name{min-width:320px}
+.col-status{width:220px}
+.col-class{width:140px}
+
+/* Sticky first column for horizontal scroll */
+.table-sticky-first{position:relative}
+.table-sticky-first th.col-roll, .table-sticky-first td.col-roll{position:sticky !important;left:0;background:#fff;z-index:5;border-right:1px solid #eee;color:#111;box-shadow:2px 0 0 rgba(0,0,0,.04)}
+.table-sticky-first thead th.col-roll{z-index:7}
+.table-responsive{overflow-x:auto;position:relative}
+
+/* Responsive overrides */
+@media (max-width: 767.98px){
+	.col-roll{width:90px}
+	.col-prn{width:130px}
+	.col-name{min-width:220px}
+	.col-status{width:auto}
+	.col-class{width:120px}
+	.card{padding:20px}
+	.table th,.table td{padding:.6rem .75rem}
+}
+
+/* Enhanced dropdowns and form elements */
+select, .form-select{border:2px solid #e1e5e9;border-radius:12px;padding:12px 16px;background:linear-gradient(145deg,#ffffff,#f8faff);box-shadow:0 4px 12px rgba(0,0,0,.05);transition:all .3s ease;font-weight:500;color:#374151}
+select:focus, .form-select:focus{border-color:var(--jspm-blue);box-shadow:0 0 0 3px rgba(226,81,98,.1),0 8px 20px rgba(0,0,0,.08);outline:none;transform:translateY(-1px)}
+select:hover, .form-select:hover{border-color:#cbd5e1;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+select option, .form-select option{padding:8px;background:#ffffff;color:#374151}
+
+/* Enhanced form labels */
+label{font-weight:600;color:#5d58c7;margin-bottom:8px;display:block;text-shadow:0 1px 2px rgba(0,0,0,.05)}
+
+/* Hint text styling */
+.hint{color:#6b7280;font-size:14px;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e5e7eb;font-style:italic}
+
+/* Main content centering */
+main .container{display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 200px)}
+
+/* Login page */
+.login-wrap{min-height:calc(100vh - 140px)}
+.login-bg{background:radial-gradient(1200px 600px at 10% -10%,rgba(31,66,135,.12),transparent 70%),radial-gradient(900px 600px at 110% 10%,rgba(214,40,40,.1),transparent 60%),linear-gradient(135deg,#f6f7fb,#eef2f9)}
+.login-card{max-width:480px}
+.input-icon{position:relative}
+.input-icon>i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--jspm-muted)}
+.input-icon>input, .input-icon>select{padding-left:40px}
+.btn-gradient{background:linear-gradient(135deg,var(--jspm-blue),#5d58c7);border:none;border-radius:12px;padding:12px 24px;font-weight:600;box-shadow:0 6px 16px rgba(226,81,98,.3);transition:all .3s ease;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.btn-gradient:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 8px 20px rgba(226,81,98,.4)}
+.btn-gradient:active{transform:translateY(0);box-shadow:0 4px 12px rgba(226,81,98,.3)}
+
+/* Enhanced Continue and Apply buttons */
+.btn-continue, .btn-apply, .btn-primary, .btn-jspm, .btn{background:linear-gradient(135deg,#e25162,#5d58c7,#e25162);background-size:200% 100%;border:none;border-radius:12px;padding:10px 20px;font-weight:600;font-size:14px;box-shadow:0 6px 16px rgba(226,81,98,.4),0 3px 6px rgba(0,0,0,.1);transition:all .4s ease;text-shadow:0 1px 2px rgba(0,0,0,.2);position:relative;overflow:hidden;color:#ffffff}
+.btn-continue::before, .btn-apply::before, .btn-primary::before, .btn-jspm::before, .btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .6s ease}
+.btn-continue:hover, .btn-apply:hover, .btn-primary:hover, .btn-jspm:hover, .btn:hover{background-position:100% 0;transform:translateY(-2px) scale(1.01);box-shadow:0 8px 18px rgba(226,81,98,.5),0 4px 8px rgba(0,0,0,.15);filter:brightness(1.1);color:#ffffff}
+.btn-continue:active, .btn-apply:hover, .btn-primary:active, .btn-jspm:active, .btn:active{transform:translateY(-1px) scale(1.01);box-shadow:0 6px 15px rgba(226,81,98,.4)}
+.btn-continue:hover::before, .btn-apply:hover::before, .btn-primary:hover::before, .btn-jspm:hover::before, .btn:hover::before{left:100%}
+.small-link{color:#64748b;text-decoration:none}
+.small-link:hover{color:#1f4287}
+
+/* Sidebar layout for dashboards */
+.layout{display:grid;grid-template-columns:260px 1fr;gap:16px}
+.sidebar{background:#fff;border:1px solid #e6e9f0;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.05);padding:10px}
+.sidebar .list-group-item{border:0;border-radius:8px;margin:2px 0}
+.sidebar .list-group-item:hover{background:#f4f6fb}
+.sidebar .list-group-item i{color:#1f4287}
+@media (max-width: 991.98px){.layout{grid-template-columns:1fr}}
+
+/* Alerts mapping */
+.alert-success{background:#e6f7ed;color:#166534;border-color:#b7e4c7}
+.alert-danger{background:#fdecea;color:#a61b1b;border-color:#f5c2c7}
+
+/* Toggle Present/Absent buttons */
+.toggle-group{display:inline-flex;gap:6px;flex-wrap:wrap}
+.toggle input{display:none}
+.toggle span{display:inline-block;padding:4px 8px;border:1px solid #d1d5db;border-radius:14px;background:#fff;color:#111;font-size:11px;cursor:pointer;transition:transform .1s ease}
+.toggle input[value="Present"]:checked + span{background:#16a34a;color:#fff;border-color:#16a34a}
+.toggle input[value="Absent"]:checked + span{background:#fee2e2;color:#7f1d1d;border-color:#fecaca}
+.toggle span:hover{transform:translateY(-1px)}
+
+/* Row highlights */
+.warn{background:#fff6f6}
+.danger{background:#ffe4e6;color:#111}
+.danger-strong{background:#fecaca;color:#111}
+
+
+/* Navbar links */
+.navbar-nav .nav-link {
+	font-weight: 600;
+	color: #1f2937; /* neutral dark */
+	padding: 10px 16px;
+	border-radius: 8px;
+	position: relative;
+	transition: all 0.3s ease;
+  }
+  
+  /* Hover effect: gradient text + background glow */
+  .navbar-nav .nav-link:hover {
+	color: #fff;
+	background: linear-gradient(135deg, var(--jspm-blue), #5d58c7);
+	box-shadow: 0 4px 12px rgba(93, 88, 199, 0.3);
+	transform: translateY(-2px);
+  }
+  
+  /* Active/selected link */
+  .navbar-nav .nav-link.active {
+	color: #fff;
+	background: linear-gradient(135deg, var(--jspm-blue), var(--jspm-red));
+	box-shadow: 0 4px 14px rgba(226, 81, 98, 0.4);
+  }
+  
+  /* For navbar buttons (Login/Logout) */
+  .navbar .btn-nav {
+	background: linear-gradient(135deg, var(--jspm-blue), #5d58c7);
+	color: #fff;
+	font-weight: 600;
+	padding: 8px 18px;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0,0,0,.15);
+	transition: all 0.3s ease;
+  }
+  
+  .navbar .btn-nav:hover {
+	filter: brightness(1.1);
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 6px 18px rgba(226,81,98,.4);
+  }
+
+/* Action bar and buttons responsiveness (teacher mark) */
+.table-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.table-actions .btn{min-width:160px;padding:8px 12px;font-size:13px;border-radius:10px;white-space:nowrap}
+.filters .btn, .filters button{height:38px}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+
+@media (max-width: 575.98px){
+	/* place buttons opposite to each other in two equal columns */
+	.table-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+	.table-actions .btn{width:100%;min-width:0;padding:8px 10px;font-size:12px;white-space:nowrap}
+	.card .filters{gap:.5rem}
+	.card .filters input[type="date"]{max-width:200px}
+}
+
+/* Compact sizing for teacher mark table */
+.table-sticky-first th,.table-sticky-first td{padding:.5rem .65rem;font-size:13px}
+.table-sticky-first .col-name{min-width:280px}
+.table-sticky-first .col-status{width:200px}
+
+/* Attendance Sheet specific button styles */
+.btn-export-csv{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(22,163,74,.3);transition:all .3s ease}
+.btn-export-csv:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(22,163,74,.4);color:#fff}
+
+.btn-export-pdf{background:linear-gradient(135deg,#dc2626,#ef4444);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(220,38,38,.3);transition:all .3s ease}
+.btn-export-pdf:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(220,38,38,.4);color:#fff}
+
+.btn-import{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(124,58,237,.3);transition:all .3s ease}
+.btn-import:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(124,58,237,.4);color:#fff}
+
+/* Responsive button layout for attendance sheet */
+@media (max-width: 991.98px){
+	.card .filters{flex-direction:column;align-items:stretch;gap:12px}
+	.card .filters label{width:100%}
+	.card .filters select, .card .filters input{width:100%}
+}
+
+@media (max-width: 767.98px){
+	.card .filters{flex-direction:column;gap:10px}
+	.card .filters button, .card .filters .btn{margin-top:8px}
+}
+
+@media (max-width: 575.98px){
+	.card .filters{gap:6px}
+	.card .filters .btn-group{flex-direction:column}
+	.card .filters .btn-group .btn{width:100%}
+	.btn-export-csv, .btn-export-pdf, .btn-import{width:100%;text-align:center;padding:12px 16px}
+}
+
+/* Fix filter alignment - ensure labels are above inputs */
+.card .filters{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;align-items:start;margin-bottom:1.5rem}
+.card .filters label{display:flex;flex-direction:column;gap:4px;margin:0}
+.card .filters label input, .card .filters label select{width:100%;margin:0}
+.card .filters .btn-group{display:flex;gap:8px;grid-column:1 / -1;justify-content:flex-start;flex-wrap:wrap;margin-top:8px}
+
+/* Consistent button colors for attendance sheet */
+.btn-export-csv, .btn-export-pdf, .btn-import{background:linear-gradient(135deg,#e25162,#5d58c7,#e25162);background-size:200% 100%;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgba(226,81,98,.3);transition:all .3s ease;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.btn-export-csv:hover, .btn-export-pdf:hover, .btn-import:hover{background-position:100% 0;filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 16px rgba(226,81,98,.4);color:#fff}
+
+/* Align Continue button with selects in filter rows */
+.card .filters .btn-continue{align-self:end;height:48px;display:inline-flex;align-items:center;justify-content:center;padding:10px 20px}
+
+@media (max-width: 767.98px){
+	.card .filters .btn-continue{height:auto}
+}
+  
+ 

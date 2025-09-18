@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}HOD - Attendance Sheet Ops{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>HOD Operations</h2>
+  <p>Use these tools to maintain teacher/student lists.</p>
+
+  <!-- Import Buttons -->
+  <div class="table-actions">
+    <a class="btn btn-import" href="{{ url_for('admin_students_import') }}">Import Students</a>
+    <a class="btn btn-import" href="{{ url_for('admin_teachers_import') }}">Import Teachers</a>
+    <a class="btn btn-import" href="{{ url_for('hod_class_import') }}">Import Class</a>
+  </div>
+
+  <div class="row g-3 align-items-start mt-2">
+    <div class="col-12 col-lg-4">
+      <h3>Remove Student</h3>
+      <form method="post" action="{{ url_for('hod_remove_student') }}" class="remove-form fullwidth">
+        <div class="form-group">
+          <label for="student-id">Roll No or PRN</label>
+          <input type="text" id="student-id" name="id" required />
+        </div>
+        <button type="submit" class="btn-remove">Remove</button>
+      </form>
+    </div>
+    <div class="col-12 col-lg-4">
+      <h3>Remove Teacher</h3>
+      <form method="post" action="{{ url_for('hod_remove_teacher') }}" class="remove-form fullwidth">
+        <div class="form-group">
+          <label for="teacher-phone">Phone</label>
+          <input type="text" id="teacher-phone" name="phone" required />
+        </div>
+        <button type="submit" class="btn-remove">Remove</button>
+      </form>
+    </div>
+    <div class="col-12 col-lg-4">
+      <h3>Update Teacher Phone</h3>
+      <form method="post" action="{{ url_for('hod_update_teacher_phone') }}" class="remove-form fullwidth">
+        <div class="form-group">
+          <label for="teacher-key">Teacher (name or current phone)</label>
+          <input type="text" id="teacher-key" name="key" placeholder="e.g., Dr. Amit Kumar Sir or 9438363640" required />
+        </div>
+        <div class="form-group">
+          <label for="new-phone">New Phone</label>
+          <input type="text" id="new-phone" name="new_phone" placeholder="e.g., 9876543210" required />
+        </div>
+        <button type="submit" class="btn-remove">Update</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Import buttons */
+.btn-import {
+  background: linear-gradient(135deg, #6366f1, #9333ea);
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-right: 10px;
+  box-shadow: 0 3px 10px rgba(99,102,241,.3);
+  transition: all .3s ease;
+}
+.btn-import:hover {
+  background: linear-gradient(135deg, #4f46e5, #7e22ce);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(99,102,241,.4);
+}
+
+/* Remove form card */
+.remove-form {
+  margin: 15px 0 25px;
+  padding: 14px;
+  background: #fafbff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.remove-form.fullwidth { max-width: 100%; }
+
+.remove-form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.remove-form label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+.remove-form input {
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  transition: all .3s ease;
+}
+
+.remove-form input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.2);
+  outline: none;
+}
+
+/* Remove button */
+.btn-remove {
+  background: linear-gradient(135deg, #ef4444, #d62828);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(220,38,38,.3);
+  transition: all .3s ease;
+  display: inline-block;
+}
+
+.btn-remove:hover {
+  background: linear-gradient(135deg, #d62828, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220,38,38,.4);
+}
+</style>
+{% endblock %}
