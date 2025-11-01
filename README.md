@@ -1,70 +1,114 @@
-# Classroom Attendance Tracker (JSPM)
+# JSPM Classroom Attendance Tracker
 
-Simple Flask app to mark class attendance, auto-calc percentages, and generate reports for Students, Teachers, HODs, and Admins.
+A user-friendly web application for tracking student attendance, cloud-based and easily managed by teachers, admins, and students.
+
+---
 
 ## Live Demo
 - Deployed on PythonAnywhere: [`https://gaurajjadhav.pythonanywhere.com`](https://gaurajjadhav.pythonanywhere.com)
 
-## Tech Stack
-- Frontend: HTML, Bootstrap, vanilla JS
-- Backend: Python (Flask)
-- Database: SQLite (`attendance.db`)
-- Exports: CSV, PDF (ReportLab)
 
-## Roles & Key Features
-- Student
-  - Personal dashboard (daily/weekly/monthly), subject-wise percentages, alerts for < 75%.
-- Teacher
-  - Select class/subject from assignments, mark attendance (with “Mark All Present”), class report with date range, CSV/PDF export.
-- Any User
-  - Attendance sheet with filters (class/subject/search), defaulters, CSV/PDF export.
-- HOD
-  - Dashboard shortcuts, remove student/teacher, bulk import Students and Teachers, Import Class (create class and add students via Paste or CSV), optional subject–teacher assignments with validation.
 
-## Quick Start (Local)
-1) Prerequisites: Python 3.10+
+## 🚀 Tech Stack
 
-2) Setup environment and install dependencies
-```bash
-python -m venv .venv
-. .venv/Scripts/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+- **Frontend:** HTML, CSS, JavaScript (Vanilla)
+- **Backend:** Python Flask
+- **Database:** SQLite (`attendance.db`)
+- **PDF Reports:** ReportLab
 
-3) Run the app
-```bash
-set FLASK_APP=app.py
-python app.py
-```
-On first run, the database schema is initialized and base/seed data ensured (incl. HOD user and teacher phone mapping).
+---
 
-## Authentication Notes
-- Student: login using PRN or Roll No; default password for new imports is `Test@123` (forced hash on first successful login if missing).
-- Teacher: login using registered phone number and password (import via Admin/HOD).
-- HOD: seeded with phone and password; can Import Class and manage removals.
-- Admin: role supported; create via DB/seed/import as per your environment.
+## 🛠️ Setup Instructions
 
-## Data Model (Summary)
-- `students(student_id, roll_no [unique], prn, name, class, semester, password_hash)`
-- `teachers(teacher_id, name [unique], phone [unique], password_hash)`
-- `teacher_assignments(assignment_id, teacher_id → teachers, subject, class, unique(teacher_id,subject,class))`
-- `admins(admin_id, name, email [unique], password_hash)`
-- `hods(hod_id, name, phone [unique], password_hash)`
-- `attendance(attendance_id, student_id → students, teacher_id → teachers, subject, class, date, status[Present|Absent], unique(student_id,subject,class,date))`
+1. **Install Python 3.10 or newer**
+2. **Clone the repository & enter the project folder**
 
-## Imports
-- Students: paste or CSV (`roll, prn, name`) via Admin or HOD Import Class.
-- Teachers: CSV lines (`name, phone, password, subject, class`), creates teacher users and assignments.
-- HOD Import Class also accepts optional assignments lines: `subject, teacher_phone_or_name`.
+3. **Create a virtual environment & install dependencies:**
+    ```bash
+    python -m venv venv
+    .\venv\Scripts\activate      # Windows PowerShell
+    pip install -r requirements.txt
+    ```
 
-## Exports
-- Teacher and Admin can export CSV and PDF reports for selected date ranges.
+4. **Run the application:**
+    ```bash
+    python app.py
+    ```
+    By default, the app runs on http://127.0.0.1:5000
 
-## Notes
-- Attendance % = (attended / total conducted) × 100 within the selected period.
-- Schema is defined in `schema.sql`. All tables enforce foreign keys and relevant unique constraints.
+5. **The app initializes the database and seed demo users on first run.**
 
-## Deployment
-- Verified running on PythonAnywhere: [`https://gaurajjadhav.pythonanywhere.com`](https://gaurajjadhav.pythonanywhere.com)
-- For other platforms, provide environment variable `SECRET_KEY` in production.
 
+---
+
+## ✨ Main Features
+
+- **Role-Based Login**
+  - Separate dashboards and permissions for Student, Teacher, HOD
+
+- **Teacher Portal**
+  - Mark attendance (all present or individual)
+  - **Select class & subject** from assignments
+  - **Lecture time selection** (NEW!)
+    - “Quick Select” for common time slots (7 AM – 8 PM)
+    - “Custom Time” for any specific period (fully flexible, AM/PM supported)
+    - Time input is _optional_ – teachers may skip it if not needed
+    - All options are **cleanly aligned, simple, and visually accessible**
+  - **Persist lecture time** in attendance records
+
+- **Attendance Reporting**
+  - PDFs & CSV attendance reports include lecture time(s) (NEW!)
+    - Times shown in top headers/columns of reports for full transparency
+    - Supports multiple, distinct lecture times
+
+- **Student Portal**
+  - View attendance, subject-wise and period-wise
+  - Alerts for low attendance (<75%)
+
+- **Admin Portal**
+  - Add/manage classes, teachers, students
+  - Bulk importing
+  - Advanced reporting & filtering
+  - Export reports to CSV/PDF (with times)
+
+- **Modern Interface**
+  - Responsive, clean UI
+  - Proper alignment of all input fields
+  - Error, info, and success messages for all key actions
+
+- **Secure**
+  - Passwords stored hashed
+  - Session protected
+
+---
+
+## 🆕 Notable Recent Additions
+
+- **Optional Lecture Time Selection**
+  - Teachers can quickly select or manually enter custom times.
+  - Time selection is not mandatory.
+
+- **Lecture Time in Reports**
+  - Each report (CSV/PDF) exports the lecture time(s) held in the selected period for a class/subject.
+
+- **Cleaner UI/UX**
+  - Time selectors now stack vertically, never overflow or appear outside their card/frame.
+  - Form components have increased clarity and are easier to fill.
+
+---
+
+## ⚙️ Notes
+
+- See `schema.sql` for details on the database structure & the new `time` field on the `attendance` table.
+- All dependencies listed in `requirements.txt`.
+- Ideal for educational institutes seeking a lightweight, fast, and transparent attendance system.
+
+---
+
+## 📄 License
+
+MIT – See LICENSE file.
+
+---
+
+Made with ❤️ for JSPM and educators everywhere.
