@@ -9,7 +9,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 
 
-## 🚀 Tech Stack
+## Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript (Vanilla)
 - **Backend:** Python Flask
@@ -18,7 +18,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 ---
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 1. **Install Python 3.10 or newer**
 2. **Clone the repository & enter the project folder**
@@ -41,7 +41,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 ---
 
-## ✨ Main Features
+## Main Features
 
 - **Role-Based Login**
   - Separate dashboards and permissions for Student, Teacher, HOD
@@ -82,7 +82,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 ---
 
-## 🆕 Notable Recent Additions
+## Notable Recent Additions
 
 - **Optional Lecture Time Selection**
   - Teachers can quickly select or manually enter custom times.
@@ -97,7 +97,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 ---
 
-## ⚙️ Notes
+## Notes
 
 - See `schema.sql` for details on the database structure & the new `time` field on the `attendance` table.
 - All dependencies listed in `requirements.txt`.
@@ -105,7 +105,7 @@ A user-friendly web application for tracking student attendance, cloud-based and
 
 ---
 
-## 📄 License
+## License
 
 MIT – See LICENSE file.
 
