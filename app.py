@@ -67,6 +67,7 @@ def init_db():
 		db.commit()
 	# ensure new columns exist (phone) and index
 	ensure_teacher_phone_column()
+	ensure_attendance_time_column()
 
 
 def ensure_teacher_phone_column():
@@ -83,6 +84,17 @@ def ensure_teacher_phone_column():
 		db.commit()
 	except sqlite3.Error:
 		pass
+
+
+def ensure_attendance_time_column():
+	db = get_db()
+	cols = get_table_columns(db, 'attendance')
+	if 'time' not in cols:
+		try:
+			db.execute('ALTER TABLE attendance ADD COLUMN time TEXT')
+			db.commit()
+		except sqlite3.Error:
+			pass
 
 
 # Seed minimal data if empty
@@ -221,6 +233,8 @@ def teacher_select():
 	if request.method == 'POST':
 		cls = request.form.get('class')
 		subject = request.form.get('subject')
+		time = request.form.get('time', '').strip()  # Time is now optional
+		
 		if not cls:
 			flash('Please select class', 'error')
 			return render_template('teacher_select.html', assignments=assigns, classes=classes, class_to_subjects=class_to_subjects_json)
@@ -231,7 +245,8 @@ def teacher_select():
 			else:
 				flash('Please select subject', 'error')
 				return render_template('teacher_select.html', assignments=assigns, classes=classes, class_to_subjects=class_to_subjects_json, selected_class=cls)
-		return redirect(url_for('teacher_mark', cls=cls, subject=subject))
+		# Time is optional, so no validation needed
+		return redirect(url_for('teacher_mark', cls=cls, subject=subject, time=time))
 	return render_template('teacher_select.html', assignments=assigns, classes=classes, class_to_subjects=class_to_subjects_json)
 
 
@@ -243,6 +258,7 @@ def teacher_mark():
 	selected_date = request.values.get('date') or datetime.now().strftime('%Y-%m-%d')
 	class_name = request.values.get('cls')
 	subject = request.values.get('subject')
+	time = request.values.get('time', '')  # Time is optional
 	if not class_name or not subject:
 		flash('Select class and subject first', 'error')
 		return redirect(url_for('teacher_select'))
@@ -253,18 +269,18 @@ def teacher_mark():
 		for student in students:
 			status = 'Present' if mark_all else request.form.get(f'status_{student["student_id"]}', 'Absent')
 			try:
-				db.execute('INSERT OR REPLACE INTO attendance (student_id, teacher_id, subject, class, date, status) VALUES (?,?,?,?,?,?)',
-						  (student['student_id'], teacher['id'], subject, class_name, date_str, status))
+				db.execute('INSERT OR REPLACE INTO attendance (student_id, teacher_id, subject, class, date, time, status) VALUES (?,?,?,?,?,?,?)',
+						  (student['student_id'], teacher['id'], subject, class_name, date_str, time, status))
 			except sqlite3.IntegrityError:
 				pass
 		db.commit()
 		flash('Attendance saved', 'success')
-		return redirect(url_for('teacher_mark', cls=class_name, subject=subject, date=date_str))
+		return redirect(url_for('teacher_mark', cls=class_name, subject=subject, time=time, date=date_str))
 	students = db.execute('SELECT * FROM students WHERE class = ? ORDER BY roll_no', (class_name,)).fetchall()
 	existing = db.execute('SELECT student_id, status FROM attendance WHERE class = ? AND subject = ? AND date = ?',
 						  (class_name, subject, selected_date)).fetchall()
 	status_map = {row['student_id']: row['status'] for row in existing}
-	return render_template('teacher_mark.html', students=students, date=selected_date, status_map=status_map, teacher=teacher, class_name=class_name, subject=subject)
+	return render_template('teacher_mark.html', students=students, date=selected_date, status_map=status_map, teacher=teacher, class_name=class_name, subject=subject, time=time)
 
 
 @app.route('/teacher/report')
@@ -324,13 +340,17 @@ def teacher_export_csv():
 	students = db.execute('SELECT roll_no, name, student_id FROM students WHERE class = ? ORDER BY roll_no', (class_name,)).fetchall()
 	buf = StringIO(newline='')
 	writer = csv.writer(buf)
-	writer.writerow(['Roll No', 'Name', 'Total Lectures', 'Attended', '% Attendance', 'Class', 'Subject', 'From', 'To'])
+	writer.writerow(['Roll No', 'Name', 'Total Lectures', 'Attended', '% Attendance', 'Class', 'Subject', 'From', 'To', 'Lecture Time'])
+	# Get lecture times for this class and subject
+	time_rows = db.execute('SELECT DISTINCT time FROM attendance WHERE class = ? AND subject = ? AND date BETWEEN ? AND ? AND time IS NOT NULL', (class_name, subject, start, end)).fetchall()
+	lecture_times = ', '.join([t['time'] for t in time_rows if t['time']]) if time_rows else 'N/A'
+	
 	for s in students:
 		rows = db.execute('SELECT status FROM attendance WHERE student_id = ? AND subject = ? AND class = ? AND date BETWEEN ? AND ?', (s['student_id'], subject, class_name, start, end)).fetchall()
 		total = len(rows)
 		attended = sum(1 for r in rows if r['status'] == 'Present')
 		percent = (attended / total * 100) if total > 0 else 0.0
-		writer.writerow([s['roll_no'], s['name'], total, attended, f'{round(percent,2)}%', class_name, subject, start, end])
+		writer.writerow([s['roll_no'], s['name'], total, attended, f'{round(percent,2)}%', class_name, subject, start, end, lecture_times])
 	data = buf.getvalue().encode('utf-8')
 	return send_file(BytesIO(data), mimetype='text/csv; charset=utf-8', as_attachment=True, download_name=f'attendance_{class_name}_{subject}_{start}_to_{end}.csv')
 
@@ -368,8 +388,14 @@ def teacher_export_pdf():
 	p.drawString(72, height - 72, f'Attendance Report: {class_name} - {subject}')
 	p.setFont('Helvetica', 10)
 	p.drawString(72, height - 88, f'From {start} to {end}')
+	# Get time information from attendance records
+	time_info = db.execute('SELECT DISTINCT time FROM attendance WHERE class = ? AND subject = ? AND date BETWEEN ? AND ? AND time IS NOT NULL', (class_name, subject, start, end)).fetchall()
+	if time_info:
+		times = [t['time'] for t in time_info if t['time']]
+		if times:
+			p.drawString(72, height - 104, f'Lecture Time(s): {", ".join(times)}')
 	# table headers
-	y = height - 110
+	y = height - 120
 	headers = ['Roll No','Name','Total','Attended','%']
 	col_x = [72, 150, 400, 450, 500]
 	p.setFont('Helvetica-Bold', 10)
@@ -532,14 +558,20 @@ def admin_export_csv():
 	students = db.execute(query_students, params_students).fetchall()
 	output = BytesIO()
 	writer = csv.writer(output)
-	writer.writerow(['Roll No', 'Name', 'Class', 'Total Lectures', 'Attended', '% Attendance'])
+	writer.writerow(['Roll No', 'Name', 'Class', 'Total Lectures', 'Attended', '% Attendance', 'Lecture Time'])
+	# Get lecture times for this class and subject
+	time_query = 'SELECT DISTINCT time FROM attendance WHERE date BETWEEN ? AND ?' + (' AND subject = ?' if subject else '') + ' AND time IS NOT NULL'
+	time_params = [start, end] + ([subject] if subject else [])
+	time_rows = db.execute(time_query, time_params).fetchall()
+	lecture_times = ', '.join([t['time'] for t in time_rows if t['time']]) if time_rows else 'N/A'
+	
 	for s in students:
 		rows = db.execute('SELECT status FROM attendance WHERE student_id = ? AND date BETWEEN ? AND ?' + (' AND subject = ?' if subject else ''),
 						 ([s['student_id'], start, end] + ([subject] if subject else []))).fetchall()
 		total = len(rows)
 		attended = sum(1 for r in rows if r['status'] == 'Present')
 		percent = (attended / total * 100) if total > 0 else 0.0
-		writer.writerow([s['roll_no'], s['name'], s['class'], total, attended, f'{round(percent,2)}%'])
+		writer.writerow([s['roll_no'], s['name'], s['class'], total, attended, f'{round(percent,2)}%', lecture_times])
 	output.seek(0)
 	return send_file(output, mimetype='text/csv', as_attachment=True, download_name='attendance_report.csv')
 
@@ -690,14 +722,20 @@ def sheet_export_csv():
 	# We need a BytesIO-compatible buffer; write text then encode
 	text_buf = StringIO()
 	w = csv.writer(text_buf)
-	w.writerow(['Roll No', 'Name', 'Class', 'Total Lectures', 'Attended', '% Attendance', 'From', 'To', 'Subject'])
+	w.writerow(['Roll No', 'Name', 'Class', 'Total Lectures', 'Attended', '% Attendance', 'From', 'To', 'Subject', 'Lecture Time'])
+	# Get lecture times for this class and subject
+	time_query = 'SELECT DISTINCT time FROM attendance WHERE date BETWEEN ? AND ?' + (' AND subject = ?' if subject else '') + ' AND time IS NOT NULL'
+	time_params = [start, end] + ([subject] if subject else [])
+	time_rows = db.execute(time_query, time_params).fetchall()
+	lecture_times = ', '.join([t['time'] for t in time_rows if t['time']]) if time_rows else 'N/A'
+	
 	for s in students:
 		rows = db.execute('SELECT status FROM attendance WHERE student_id = ? AND date BETWEEN ? AND ?' + (' AND subject = ?' if subject else ''),
 						 ([s['student_id'], start, end] + ([subject] if subject else []))).fetchall()
 		total = len(rows)
 		attended = sum(1 for r in rows if r['status'] == 'Present')
 		percent = (attended / total * 100) if total > 0 else 0.0
-		w.writerow([s['roll_no'], s['name'], s['class'], total, attended, f'{round(percent,2)}%', start, end, subject or 'All'])
+		w.writerow([s['roll_no'], s['name'], s['class'], total, attended, f'{round(percent,2)}%', start, end, subject or 'All', lecture_times])
 	data = text_buf.getvalue().encode('utf-8')
 	return send_file(BytesIO(data), mimetype='text/csv; charset=utf-8', as_attachment=True, download_name='attendance_sheet.csv')
 

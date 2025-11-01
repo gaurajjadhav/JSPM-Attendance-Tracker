@@ -4,27 +4,86 @@
 <section class="card">
 	<h2>Select Class & Subject</h2>
 	<form method="post" class="filters" id="selectForm">
-		<label>
-			Class
-			<select name="class" id="classSelect" required>
-				<option value="">-- Select --</option>
-				{% for c in classes %}
-				<option value="{{ c }}" {% if selected_class==c %}selected{% endif %}>{{ c }}</option>
-				{% endfor %}
-			</select>
+		<div class="form-row">
+			<label class="form-col">
+				Class
+				<select name="class" id="classSelect" required>
+					<option value="">-- Select --</option>
+					{% for c in classes %}
+					<option value="{{ c }}" {% if selected_class==c %}selected{% endif %}>{{ c }}</option>
+					{% endfor %}
+				</select>
+			</label>
+			<label class="form-col">
+				Subject
+				<select name="subject" id="subjectSelect">
+					<option value="">-- Select --</option>
+				</select>
+			</label>
+		</div>
+		
+		<label class="lecture-time-section">
+			Lecture Time <span class="optional">(Optional)</span>
+			<div class="time-selection">
+				<div class="time-options">
+					<label class="time-option">
+						<input type="radio" name="time_type" value="preset" id="presetTime" checked>
+						<span>Quick Select</span>
+					</label>
+					<label class="time-option">
+						<input type="radio" name="time_type" value="custom" id="customTime">
+						<span>Custom Time</span>
+					</label>
+				</div>
+				
+				<div id="presetTimeDiv" class="time-input-section">
+					<select name="time_preset" id="timePreset">
+						<option value="">-- Select Time (Optional) --</option>
+						<option value="07:00 AM - 08:00 AM">07:00 AM - 08:00 AM</option>
+						<option value="07:30 AM - 08:30 AM">07:30 AM - 08:30 AM</option>
+						<option value="08:00 AM - 09:00 AM">08:00 AM - 09:00 AM</option>
+						<option value="08:30 AM - 09:30 AM">08:30 AM - 09:30 AM</option>
+						<option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM</option>
+						<option value="09:30 AM - 10:30 AM">09:30 AM - 10:30 AM</option>
+						<option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+						<option value="10:30 AM - 11:30 AM">10:30 AM - 11:30 AM</option>
+						<option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+						<option value="11:30 AM - 12:30 PM">11:30 AM - 12:30 PM</option>
+						<option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+						<option value="12:30 PM - 01:30 PM">12:30 PM - 01:30 PM</option>
+						<option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+						<option value="01:30 PM - 02:30 PM">01:30 PM - 02:30 PM</option>
+						<option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+						<option value="02:30 PM - 03:30 PM">02:30 PM - 03:30 PM</option>
+						<option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+						<option value="03:30 PM - 04:30 PM">03:30 PM - 04:30 PM</option>
+						<option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+						<option value="04:30 PM - 05:30 PM">04:30 PM - 05:30 PM</option>
+						<option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM</option>
+						<option value="05:30 PM - 06:30 PM">05:30 PM - 06:30 PM</option>
+						<option value="06:00 PM - 07:00 PM">06:00 PM - 07:00 PM</option>
+						<option value="06:30 PM - 07:30 PM">06:30 PM - 07:30 PM</option>
+						<option value="07:00 PM - 08:00 PM">07:00 PM - 08:00 PM</option>
+					</select>
+				</div>
+				
+				<div id="customTimeDiv" class="time-input-section">
+					<input type="text" name="time_custom" id="timeCustom" placeholder="e.g., 08:45 AM - 09:45 AM" 
+						   pattern="^[0-9]{1,2}:[0-9]{2}\s?(AM|PM)\s?-\s?[0-9]{1,2}:[0-9]{2}\s?(AM|PM)$"
+						   title="Format: HH:MM AM/PM - HH:MM AM/PM" disabled>
+					<small class="time-hint">Format: 08:45 AM - 09:45 AM</small>
+				</div>
+			</div>
 		</label>
-		<label>
-			Subject
-			<select name="subject" id="subjectSelect">
-				<option value="">-- Select --</option>
-			</select>
-		</label>
+		
 		<button type="submit" class="btn-continue">Continue</button>
 	</form>
 	<script>
 		const mapData = {{ class_to_subjects | tojson }};
 		const classSel = document.getElementById('classSelect');
 		const subjSel = document.getElementById('subjectSelect');
+		const form = document.getElementById('selectForm');
+		
 		function refreshSubjects(){
 			const cls = classSel.value;
 			const subs = (mapData[cls] ? Array.from(mapData[cls]) : []);
@@ -35,10 +94,75 @@
 			});
 			if (subs.length === 1){ subjSel.value = subs[0]; }
 		}
+		
+		function handleTimeSelection(){
+			const presetTime = document.getElementById('presetTime');
+			const customTime = document.getElementById('customTime');
+			const presetSelect = document.getElementById('timePreset');
+			const customInput = document.getElementById('timeCustom');
+			const customDiv = document.getElementById('customTimeDiv');
+			
+			// Ensure custom div is always visible
+			if (customDiv) {
+				customDiv.style.display = 'block';
+			}
+			
+			if (presetTime.checked) {
+				presetSelect.disabled = false;
+				customInput.disabled = true;
+				customInput.value = '';
+			} else if (customTime.checked) {
+				presetSelect.disabled = true;
+				customInput.disabled = false;
+				presetSelect.value = '';
+			}
+		}
+		
+		function updateTimeValue(){
+			const presetTime = document.getElementById('presetTime');
+			const customTime = document.getElementById('customTime');
+			
+			let timeValue = '';
+			
+			if (presetTime.checked) {
+				timeValue = document.getElementById('timePreset').value;
+			} else if (customTime.checked) {
+				timeValue = document.getElementById('timeCustom').value;
+			}
+			
+			// Create or update hidden input
+			let timeInput = document.getElementById('time');
+			if (!timeInput) {
+				timeInput = document.createElement('input');
+				timeInput.type = 'hidden';
+				timeInput.name = 'time';
+				timeInput.id = 'time';
+				form.appendChild(timeInput);
+			}
+			timeInput.value = timeValue;
+		}
+		
+		// Add event listeners
+		document.getElementById('presetTime').addEventListener('change', function() {
+			console.log('Quick Select clicked');
+			handleTimeSelection();
+		});
+		document.getElementById('customTime').addEventListener('change', function() {
+			console.log('Custom Time clicked');
+			handleTimeSelection();
+		});
+		document.getElementById('timePreset').addEventListener('change', updateTimeValue);
+		document.getElementById('timeCustom').addEventListener('input', updateTimeValue);
+		
 		classSel.addEventListener('change', refreshSubjects);
 		// initialize on load if class preselected
 		refreshSubjects();
+		handleTimeSelection();
+		
+		// Debug: Log initial state
+		console.log('Custom time div:', document.getElementById('customTimeDiv'));
+		console.log('Custom time input:', document.getElementById('timeCustom'));
 	</script>
-	<p class="hint">Subjects list is restricted to your assignment for the selected class.</p>
+	<p class="hint">Time selection is optional. Choose "Quick Select" for common times or "Custom Time" for any specific time. You can skip time selection entirely.</p>
 </section>
 {% endblock %}

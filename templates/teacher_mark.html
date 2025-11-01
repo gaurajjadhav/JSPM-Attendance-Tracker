@@ -3,6 +3,9 @@
 {% block content %}
 <section class="card">
 	<h2>Class Attendance</h2>
+	<div class="info-bar mb-2">
+		<strong>Class:</strong> {{ class_name }} | <strong>Subject:</strong> {{ subject }}{% if time %} | <strong>Time:</strong> {{ time }}{% endif %}
+	</div>
 	<div class="table-actions mb-2">
 		<a class="btn btn-jspm btn-sm" href="{{ url_for('teacher_select') }}">Change Class/Sub</a>
 		<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('teacher_report', cls=class_name, subject=subject) }}">View Report</a>
@@ -10,6 +13,7 @@
 	<form method="get" class="filters">
 		<input type="hidden" name="cls" value="{{ class_name }}" />
 		<input type="hidden" name="subject" value="{{ subject }}" />
+		<input type="hidden" name="time" value="{{ time }}" />
 		<label>
 			Date
 			<input type="date" name="date" value="{{ date }}" />

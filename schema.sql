@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS attendance (
 	subject TEXT NOT NULL,
 	class TEXT NOT NULL,
 	date TEXT NOT NULL,
+	time TEXT,
 	status TEXT NOT NULL CHECK(status IN ('Present','Absent')),
 	UNIQUE(student_id, subject, class, date),
 	FOREIGN KEY(student_id) REFERENCES students(student_id) ON DELETE CASCADE,
